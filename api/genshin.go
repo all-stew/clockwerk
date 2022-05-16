@@ -4,9 +4,10 @@ import (
 	"crypto/md5"
 	"encoding/hex"
 	"fmt"
-	"github.com/imroc/req"
 	"math/rand"
 	"time"
+
+	"github.com/imroc/req"
 )
 
 const (

@@ -3,6 +3,7 @@ package mysql
 import (
 	"clockwerk/config"
 	"fmt"
+
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/go-xorm/xorm"
 )

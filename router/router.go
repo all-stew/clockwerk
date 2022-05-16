@@ -2,8 +2,9 @@ package router
 
 import (
 	"clockwerk/util/logger"
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 )
 
 func SetupRouter(mode string) *gin.Engine {

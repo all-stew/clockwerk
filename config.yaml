@@ -3,6 +3,9 @@ mode: "dev"
 port: 8000
 version: "v0.0.1"
 
+secret:
+  param: 123456
+
 log:
   level: "debug"
   filename: "./log/clockwerk.log"
@@ -14,7 +17,5 @@ mysql:
   host: "127.0.0.1"
   port: 3306
   user: "root"
-  password: "123456"
+  password: "123"
   dbname: "clockwerk"
-  max_open_conns: 200
-  max_idle_conns: 50

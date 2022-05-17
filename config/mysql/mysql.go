@@ -3,31 +3,22 @@ package mysql
 import (
 	"clockwerk/config"
 	"fmt"
-
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
-var engine *xorm.Engine
+var engine *gorm.DB
 
-func init() {
-	conf := config.Config.MySQLConfig
-	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8", conf.User, conf.Password, conf.Host, conf.Port, conf.DB)
-	engine, _ = xorm.NewEngine("mysql", dsn)
-	err := engine.Ping()
+func Init(conf *config.MySQLConfig) (err error) {
+	dsn := fmt.Sprintf("%v:%v@tcp(%v:%v)/%v?charset=utf8&parseTime=true", conf.User, conf.Password, conf.Host, conf.Port, conf.DB)
+	engine, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		fmt.Println("mysql连接数据库失败")
-	} else {
-		fmt.Println("mysql连接数据库成功!!!")
-		engine.SetMaxOpenConns(conf.MaxOpenConns)
-		engine.SetMaxIdleConns(conf.MaxIdleConns)
+		fmt.Printf("mysql连接数据库失败 %s", err)
+		return
 	}
-}
-func GetDb() *xorm.Engine {
-	return engine
+	return
 }
 
-// Close 关闭MySQL连接
-func Close() {
-	_ = engine.Close()
+func GetDb() *gorm.DB {
+	return engine
 }

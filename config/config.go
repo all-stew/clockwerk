@@ -19,13 +19,11 @@ type AppConfig struct {
 }
 
 type MySQLConfig struct {
-	Host         string `mapstructure:"host"`
-	User         string `mapstructure:"user"`
-	Password     string `mapstructure:"password"`
-	DB           string `mapstructure:"dbname"`
-	Port         int    `mapstructure:"port"`
-	MaxOpenConns int    `mapstructure:"max_open_conns"`
-	MaxIdleConns int    `mapstructure:"max_idle_conns"`
+	Host     string `mapstructure:"host"`
+	User     string `mapstructure:"user"`
+	Password string `mapstructure:"password"`
+	DB       string `mapstructure:"dbname"`
+	Port     int    `mapstructure:"port"`
 }
 
 type LogConfig struct {
@@ -36,13 +34,15 @@ type LogConfig struct {
 	MaxBackups int    `mapstructure:"max_backups"`
 }
 
-func Init() error {
-	viper.SetConfigFile("./config.yaml")
+func Init(path string) error {
+	viper.SetConfigFile(path)
 
 	viper.WatchConfig()
 	viper.OnConfigChange(func(in fsnotify.Event) {
 		fmt.Println("the config is updated")
-		viper.Unmarshal(&Config)
+		if err := viper.Unmarshal(&Config); err != nil {
+			panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
+		}
 	})
 
 	err := viper.ReadInConfig()

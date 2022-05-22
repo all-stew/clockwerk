@@ -8,7 +8,7 @@ secret:
 
 log:
   level: "debug"
-  filename: "./log/clockwerk.log"
+  filename: "./logger/clockwerk.logger"
   max_size: 1000
   max_age: 3600
   max_backups: 5

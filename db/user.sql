@@ -10,6 +10,8 @@ create table `users`
     `email`           varchar(128) not null default '' comment '用户邮箱',
     `phone`           varchar(64)  not null default '' comment '手机号码',
     `status`          tinyint      not null default 0 comment '帐号状态',
+    `password`        varchar(256) not null default '' comment '账户密码',
+    `salt`            varchar(32) not null default '' comment '盐',
     `created_by`       bigint                default 0 comment '创建者id',
     `created_at`       datetime              default CURRENT_TIMESTAMP comment '创建时间',
     `updated_by`       bigint                default 0 comment '更新者id',

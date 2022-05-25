@@ -8,7 +8,7 @@ import (
 )
 
 func TestStore_Create(t *testing.T) {
-	if err := config.Init("../../myconfig.yaml"); err != nil {
+	if err := config.Init("../../config.yaml"); err != nil {
 		logger.Logf("load config failed, err:%v\n", err)
 		return
 	}
@@ -31,7 +31,7 @@ func TestStore_Create(t *testing.T) {
 		want bool
 	}{
 		// TODO: Add test cases.
-		{"test1", args{account: "123", accountType: ACCOUNT_TYPE_MIHOYO_BBS, parentId: 0, accountParam: "{\"test\":1}", userId: 0, createBy: 0}, true},
+		{"test1", args{account: "123", accountType: ACCOUNT_TYPE_MIHOYO_BBS, parentId: 0, accountParam: "{\"cookie_token\":\"\", \"account_id\": \"\"}", userId: 1, createBy: 0}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -45,7 +45,7 @@ func TestStore_Create(t *testing.T) {
 
 func TestStore_Update(t *testing.T) {
 
-	if err := config.Init("../../myconfig.yaml"); err != nil {
+	if err := config.Init("../../config.yaml"); err != nil {
 		logger.Logf("load config failed, err:%v\n", err)
 		return
 	}
@@ -74,6 +74,37 @@ func TestStore_Update(t *testing.T) {
 			s := Store{}
 			if got := s.Update(tt.args.id, tt.args.accountParam, tt.args.updatedBy); got != tt.want {
 				t.Errorf("Update() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestStore_ListByStatus(t *testing.T) {
+
+	if err := config.Init("../../config.yaml"); err != nil {
+		logger.Logf("load config failed, err:%v\n", err)
+		return
+	}
+	if err := mysql.Init(config.Config.MySQLConfig); err != nil {
+		logger.Logf("init mysql failed, err:%v\n", err)
+		return
+	}
+
+	type args struct {
+		status Status
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"test1", args{status: ACCOUNT_ENABLE}, 1},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			s := Store{}
+			if got := s.ListByStatus(tt.args.status); len(got) != tt.want {
+				t.Errorf("ListByStatus() = %v, want %v", got, tt.want)
 			}
 		})
 	}

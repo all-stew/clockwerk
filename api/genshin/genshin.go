@@ -1,8 +1,10 @@
-package api
+package genshin
 
 import (
+	"clockwerk/pkg/logger"
 	"crypto/md5"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
 	"math/rand"
 	"time"
@@ -19,16 +21,48 @@ const (
 	ActId            = "e202009291139501"
 )
 
-func getUserGameRole() {
+type GenshinCookie struct {
+	CookieToken string `json:"cookie_token"`
+	AccountId   string `json:"account_id"`
+}
+
+type GenshinAccountResp struct {
+	RetCode int                `json:"retcode"`
+	Message string             `json:"message"`
+	Data    GenshinAccountData `json:"data"`
+}
+
+type GenshinAccountData struct {
+	List []GenshinAccount `json:"list"`
+}
+
+type GenshinAccount struct {
+	GameBiz    string `json:"game_biz"`
+	Region     string `json:"region"`
+	GameUid    string `json:"game_uid"`
+	Nickname   string `json:"nickname"`
+	Level      int    `json:"level"`
+	IsChosen   bool   `json:"is_chosen"`
+	RegionName string `json:"region_name"`
+	IsOfficial bool   `json:"is_official"`
+}
+
+func GetGenshinCookie(cookie string) (GenshinCookie, error) {
+	var data GenshinCookie
+	err := json.Unmarshal([]byte(cookie), &data)
+	return data, err
+}
+
+func GetUserGameRoleByCookie(cookie string) (*req.Resp, error) {
 	// 获取角色列表接口
 	uri := "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie?game_biz=hk4e_cn"
 	header := req.Header{
-		"Cookie": "cookiestring",
+		"Cookie": cookie,
 	}
 
-	res, err := req.Get(uri, header)
-	fmt.Println(res)
-	fmt.Println(err)
+	resp, err := req.Get(uri, header)
+	logger.Logf("resp is %s", resp.String())
+	return resp, err
 }
 
 func getSignInfo() {
@@ -60,8 +94,8 @@ func sign() {
 		"User-Agent":        UserAgent,
 	}
 
-	json := req.BodyJSON(requestJson)
-	res, err := req.Post(uri, header, json)
+	jsonBody := req.BodyJSON(requestJson)
+	res, err := req.Post(uri, header, jsonBody)
 
 	fmt.Println(res.Request().Header)
 	fmt.Println(res.Request().Body)
@@ -74,8 +108,8 @@ func getDs() string {
 	rand.Seed(time.Now().UnixNano())
 	r := rand.Intn(999999)
 	ms := fmt.Sprintf("salt=cx2y9z9a29tfqvr1qsq6c7yz99b5jsqt&t=%d&r=%d", t, r)
-	md5 := Md5(ms)
-	return fmt.Sprintf("%d,%d,%s", t, r, md5)
+	md5Str := Md5(ms)
+	return fmt.Sprintf("%d,%d,%s", t, r, md5Str)
 }
 
 func Md5(str string) string {

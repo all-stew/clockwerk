@@ -9,7 +9,9 @@ import (
 )
 
 func main() {
-	task.RunTask()
+	go func() {
+		task.Schedule()
+	}()
 	if err := config.Init("./config.yaml"); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return

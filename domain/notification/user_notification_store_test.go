@@ -9,7 +9,7 @@ import (
 
 func TestStore_Create(t *testing.T) {
 
-	if err := config.Init("../../myconfig.yaml"); err != nil {
+	if err := config.Init("../../config.yaml"); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return
 	}
@@ -45,7 +45,7 @@ func TestStore_Create(t *testing.T) {
 
 func TestStore_Update(t *testing.T) {
 
-	if err := config.Init("../../myconfig.yaml"); err != nil {
+	if err := config.Init("../../config.yaml"); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return
 	}

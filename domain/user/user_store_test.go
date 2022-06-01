@@ -9,7 +9,7 @@ import (
 
 func TestStore_Create(t *testing.T) {
 
-	if err := config.Init("./config.yaml"); err != nil {
+	if err := config.Init("../../config.yaml"); err != nil {
 		fmt.Printf("load config failed, err:%v\n", err)
 		return
 	}
@@ -21,6 +21,7 @@ func TestStore_Create(t *testing.T) {
 	type args struct {
 		username  string
 		nickname  string
+		password  string
 		email     string
 		phone     string
 		createdBy uint64
@@ -30,12 +31,12 @@ func TestStore_Create(t *testing.T) {
 		args args
 		want bool
 	}{
-		{"test", args{"zjj", "zjj", "zjj", "zjj", 0}, true},
+		{"test", args{"zjj", "zjj", "zjj", "zjj", "zjj", 0}, true},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			st := &Store{}
-			if got := st.Create(tt.args.username, tt.args.nickname, tt.args.email, tt.args.phone, tt.args.createdBy); got != tt.want {
+			if got := st.Create(tt.args.username, tt.args.nickname, tt.args.password, tt.args.email, tt.args.phone, tt.args.createdBy); got != tt.want {
 				t.Errorf("Create() = %v, want %v", got, tt.want)
 			}
 		})

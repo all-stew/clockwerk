@@ -1,56 +1,37 @@
 package config
 
-import (
-	"fmt"
+type ServerConfig struct {
+	Name        string      `mapstructure:"name"`
+	Mode        string      `mapstructure:"mode"`
+	Port        int         `mapstructure:"port"`
+	Version     string      `mapstructure:"version"`
+	JWTConfig   JWTConfig   `mapstructure:"jwt"`
+	RedisConfig RedisConfig `mapstructure:"redis"`
+	LogConfig   LogConfig   `mapstructure:"logger"`
+	MySQLConfig MySQLConfig `mapstructure:"mysql"`
+}
 
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
-)
-
-var Config = new(AppConfig)
-
-type AppConfig struct {
-	Name         string `mapstructure:"name"`
-	Mode         string `mapstructure:"mode"`
-	Port         int    `mapstructure:"port"`
-	Version      string `mapstructure:"version"`
-	*LogConfig   `mapstructure:"logger"`
-	*MySQLConfig `mapstructure:"mysql"`
+type RedisConfig struct {
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Password string `mapstructure:"password_util"`
 }
 
 type MySQLConfig struct {
 	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
 	User     string `mapstructure:"user"`
 	Password string `mapstructure:"password"`
 	DB       string `mapstructure:"dbname"`
-	Port     int    `mapstructure:"port"`
 }
 
 type LogConfig struct {
 	Level      string `mapstructure:"level"`
-	Filename   string `mapstructure:"filename"`
 	MaxSize    int    `mapstructure:"max_size"`
 	MaxAge     int    `mapstructure:"max_age"`
 	MaxBackups int    `mapstructure:"max_backups"`
 }
 
-func Init(path string) error {
-	viper.SetConfigFile(path)
-
-	viper.WatchConfig()
-	viper.OnConfigChange(func(in fsnotify.Event) {
-		fmt.Println("the config is updated")
-		if err := viper.Unmarshal(&Config); err != nil {
-			panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
-		}
-	})
-
-	err := viper.ReadInConfig()
-	if err != nil {
-		panic(fmt.Errorf("ReadInConfig failed, err: %v", err))
-	}
-	if err := viper.Unmarshal(&Config); err != nil {
-		panic(fmt.Errorf("unmarshal to Conf failed, err:%v", err))
-	}
-	return err
+type JWTConfig struct {
+	Key string `mapstructure:"key" json:"key"`
 }

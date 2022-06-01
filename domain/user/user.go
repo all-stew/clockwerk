@@ -8,7 +8,7 @@ type User struct {
 	Nickname  string `gorm:"column:nickname"`
 	Email     string `gorm:"column:email"`
 	Phone     string `gorm:"column:phone"`
-	Password  string `gorm:"column:password"`
+	Password  string `gorm:"column:password_util"`
 	Salt      string `gorm:"column:salt"`
 	Status    Status `gorm:"column:status"`
 	CreatedAt *time.Time

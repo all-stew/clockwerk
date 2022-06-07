@@ -1,50 +1,66 @@
 package main
 
 import (
-	"clockwerk/global"
-	"clockwerk/initialize"
-	"clockwerk/middlewares"
+	"clockwerk/src/global"
+	"clockwerk/src/initialize"
+	"context"
 	"fmt"
-	"github.com/fatih/color"
-	"go.uber.org/zap"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 )
 
+/*
+	说明：程序总入口
+*/
 func main() {
-	// 1. 初始化yaml配置
-	color.Cyan("1. initialize config...")
-	initialize.InitConfig()
-	// 2. 初始化routers
-	color.Cyan("2. initialize routers...")
-	Router := initialize.Routers()
+	// 初始化操作
+	initialize.Config() // 配置初始化
+	initialize.Logger() // 日志初始化
+	initialize.Mysql()  // 数据库初始化
+	//initialize.MysqlCasbin() // Casbin 初始化
+	initialize.Redis()       // Redis 初始化
+	initialize.Validate()    // Validate.v10 校验器初始化
+	r := initialize.Router() // 路由初始化
 
-	// 3. 初始化日志信息
-	color.Cyan("3. initialize logger...")
-	initialize.InitLogger()
-
-	color.Cyan("4. initialize translation...")
-	if err := initialize.InitTrans("zh"); err != nil {
-		panic(err)
+	/*
+	   配置优雅启停服务
+	   参考官方文档：https://gin-gonic.com/zh-cn/docs/examples/graceful-restart-or-stop/
+	*/
+	srv := &http.Server{
+		Addr:    fmt.Sprintf("%s:%d", global.Conf.System.Host, global.Conf.System.Port),
+		Handler: r,
 	}
 
-	// 5.初始化mysql
-	initialize.InitMysqlDB()
+	go func() {
+		err := srv.ListenAndServe()
+		// 启动时候如果报错，并且错误不是关闭服务器，则打印日志并退出
+		if err != nil && err != http.ErrServerClosed {
+			log.Fatalf("服务启动失败，%s", err.Error())
+		}
+	}()
 
-	//6. 初始化redis
-	initialize.InitRedis()
-	global.Redis.Set("test", "testValue", time.Second)
-	value := global.Redis.Get("test")
-	color.Blue(value.Val())
+	/*
+	   通过用户传递的信号实现优雅的退出，如 windows 的 ctrl + c，Linux 的 kill
+	   Linux kill 信号说明：
+	   kill：默认发送 syscall.SIGTERM 信号
+	   kill -2：发送 syscall.SIGINT 信号
+	   kill -9：发送 syscall.SIGKILL 信号，但是没法捕捉到，所以不建议使用
+	*/
+	quit := make(chan os.Signal)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit // 等待信号传入
 
-	color.Cyan("4. use gin logger and recovery...")
-	// 4. use ginLogger
-	Router.Use(middlewares.GinLogger(), middlewares.GinRecovery(true))
-
-	// 5. 启动
-	color.Cyan("5. gin is running...")
-	err := Router.Run(fmt.Sprintf(":%d", global.ServerSetting.Port)) // 监听并在 0.0.0.0:8080 上启动服务
+	// 当停止信号传入时，给程序 5 秒钟的处理时间，避免没有处理完请求给客户端报错
+	log.Println("开始停止服务...")
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+	defer cancel()
+	err := srv.Shutdown(ctx)
 	if err != nil {
-		zap.L().Info("error when starting")
+		log.Fatalf("服务停止失败：%s", err.Error())
 	}
-
+	log.Println("服务停止完成！")
 }

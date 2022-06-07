@@ -1,0 +1,84 @@
+system:
+  # 项目名称
+  name: clockwerk
+  # 监听地址
+  host: 0.0.0.0
+  # 监听端口
+  port: 8080
+  # 运行模式（debug | release）
+  mode: debug
+  # 接口前缀
+  api-prefix: api
+  # 接口版本
+  api-version: v1
+  # 默认头像
+  avatar: https://avatars.githubusercontent.com/u/32036696?v=4
+
+logs:
+  # 日志等级，参考 zapcore.Level（-1<=level<=5，-1 / DEBUG）
+  level: -1
+  # 日志等级颜色输出
+  colorful: false
+  # 日志路径
+  path: logs
+  # 文件大小，单位 M
+  max-size: 100
+  # 日志备份数量
+  max-backups: 100
+  # 日志存留天数
+  max-age: 30
+  # 日志是否压缩
+  compress: true
+
+mysql:
+  # 数据库地址
+  host: 127.0.0.1
+  # 数据库端口
+  port: 3306
+  # 数据库名称
+  database: clockwerk
+  # 数据库用户
+  username: root
+  # 数据库密码
+  password: zjj12345
+  # 数据库编码
+  charset: utf8mb4
+  # 数据库字符集
+  collation: utf8mb4_general_ci
+  # 数据库连接串
+  query: parseTime=True&loc=Local&timeout=10000ms
+  # 空闲连接数
+  max-idle-conns: 10
+  # 最大连接数量
+  max-open-conns: 100
+  # 连接最大可复用时间，分钟
+  max-idle-time: 60
+  # 是否打印日志，false 只打印 Error 级别日志
+  log-mode: false
+  # 日志级别(1-3，Info，Warn，Error)
+  log-level: 1
+
+jwt:
+  # jwt 标识
+  realm: example
+  # 服务端秘钥
+  key: go-admin-example
+  # 超时时间，单位小时（一天）
+  timeout: 24
+  # 刷新 token 的时间，单位小时(一周)
+  max-refresh: 168
+
+
+casbin:
+  # 配置文件
+  model: model.conf
+
+redis:
+  # Redis 地址
+  host: 127.0.0.1
+  # Redis 端口
+  port: 6379
+  # Redis 密码
+#  password: 123456
+  # Redis 库
+  db: 0

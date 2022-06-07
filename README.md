@@ -4,19 +4,26 @@
 
 ```bash
 .
-├── config 配置文件对应的结构体定义
-├── controller 业务层
-├── dao 操作数据库，给controller提供数据
-├── entitys 实体类
-│   ├── models 数据库对象
-│   └── views 试图对象
-├── globals 全局便利
-├── initialize 服务初始化
-├── logs 日志存储
-├── middlewares 中间件
-├── util 工具
-│   └── response 封装response
-├── router 路由
-├── main.go 服务启动文件
-└── settings-dev.yaml 配置文件
+├── Dockerfile
+├── LICENSE
+├── Makefile
+├── README.md
+├── go.mod
+├── go.sum
+├── logs
+├── main.go
+├── pkg
+└── src
+    ├── api 业务层
+    ├── common
+    ├── config 配置文件对应的结构体定义
+    ├── external_api
+    ├── global 全局变量
+    ├── initialize 服务初始化
+    ├── middlewares 中间件
+    ├── models 数据库对象
+    ├── repository 操作数据库，提供数据
+    ├── routes 路由
+    ├── task
+    └── views 视图对象
 ```

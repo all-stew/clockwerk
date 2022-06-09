@@ -42,6 +42,8 @@ func Router() *gin.Engine {
 		systemGroup := vGroup.Group("system")
 		{
 			routes.UserRouters(systemGroup, auth) // 用户相关接口
+			routes.RoleRouters(systemGroup, auth) // 角色相关接口
+			routes.MenuRouters(systemGroup, auth) // 菜单相关接口
 		}
 	}
 	log.Println("路由初始化完成")

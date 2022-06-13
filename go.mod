@@ -15,7 +15,7 @@ require (
 require (
 	github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible // indirect
 	github.com/appleboy/gin-jwt/v2 v2.8.0 // indirect
-	github.com/casbin/casbin/v2 v2.47.1 // indirect
+	github.com/casbin/casbin/v2 v2.47.2 // indirect
 	github.com/casbin/gorm-adapter/v3 v3.7.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/denisenkom/go-mssqldb v0.12.0 // indirect
@@ -35,6 +35,7 @@ require (
 	github.com/gobuffalo/logger v1.0.6 // indirect
 	github.com/gobuffalo/packd v1.0.1 // indirect
 	github.com/gobuffalo/packr/v2 v2.8.3 // indirect
+	github.com/gobwas/glob v0.2.3 // indirect
 	github.com/golang-jwt/jwt/v4 v4.2.0 // indirect
 	github.com/golang-module/carbon/v2 v2.1.8 // indirect
 	github.com/golang-sql/civil v0.0.0-20220223132316-b832511892a9 // indirect

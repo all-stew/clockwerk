@@ -1,8 +1,8 @@
 package main
 
 import (
-	"clockwerk/src/global"
-	"clockwerk/src/initialize"
+	"clockwerk/app/global"
+	"clockwerk/app/initialize"
 	"context"
 	"fmt"
 	"log"

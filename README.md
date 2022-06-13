@@ -13,7 +13,7 @@
 ├── logs
 ├── main.go
 ├── pkg
-└── src
+└── app
     ├── api 业务层
     ├── common
     ├── config 配置文件对应的结构体定义

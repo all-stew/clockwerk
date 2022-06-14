@@ -6,12 +6,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-/*
-	说明：公开的路由
-*/
-
-// 测试接口
-func PublicRouters(r *gin.RouterGroup) gin.IRoutes {
+// TestRouters 测试接口
+func TestRouters(r *gin.RouterGroup) gin.IRoutes {
 	// http :8080/api/v1/ping
 	r.GET("/ping", api.PingHandler)
 	// http :8080/api/v1/ping/id?id=20

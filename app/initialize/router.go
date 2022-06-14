@@ -4,8 +4,10 @@ import (
 	"clockwerk/app/global"
 	"clockwerk/app/middlewares"
 	"clockwerk/app/routes"
+	"clockwerk/pkg/response"
 	"fmt"
 	"log"
+	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
 )
@@ -22,6 +24,9 @@ func Router() *gin.Engine {
 	// 创建不带中间件的路由
 	r := gin.New()
 
+	r.NoRoute(HandleNotFound)
+	r.NoMethod(HandleNotFound)
+	r.Use(Recover)
 	// 中间件
 	r.Use(middleware.AccessLog) // 访问中间件
 	r.Use(middleware.Cors)      // 跨域中间件
@@ -36,7 +41,7 @@ func Router() *gin.Engine {
 	// 添加 v1 前缀
 	vGroup := apiGroup.Group(global.Conf.System.ApiVersion)
 	{
-		routes.PublicRouters(vGroup)     // 开放接口
+		routes.TestRouters(vGroup)       // 测试接口接口
 		routes.BaseRouters(vGroup, auth) // 登录登出接口
 		// 系统模块路由入口
 		systemGroup := vGroup.Group("system")
@@ -48,4 +53,28 @@ func Router() *gin.Engine {
 	}
 	log.Println("路由初始化完成")
 	return r
+}
+
+func HandleNotFound(c *gin.Context) {
+	global.Log.Errorf("handle not found: %v", c.Request.RequestURI)
+	response.NewResult(c).Fail(404, "资源未找到")
+	return
+}
+
+func Recover(c *gin.Context) {
+	defer func() {
+		if r := recover(); r != nil {
+			//打印错误堆栈信息
+			//log.Printf("panic: %v\n", r)
+			global.Log.Errorf("panic: %v", r)
+			//log stack
+			global.Log.Errorf("stack: %v", string(debug.Stack()))
+			//print stack
+			debug.PrintStack()
+			//return
+			response.NewResult(c).Fail(500, "服务器内部错误")
+		}
+	}()
+	//继续后续接口调用
+	c.Next()
 }

@@ -13,9 +13,7 @@ import (
 	"time"
 )
 
-/*
-	说明：程序总入口
-*/
+// main 入口
 func main() {
 	// 初始化操作
 	initialize.Config() // 配置初始化

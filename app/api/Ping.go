@@ -24,7 +24,8 @@ func PingValidatorHandler(ctx *gin.Context) {
 
 func PingValidatorFormHandler(ctx *gin.Context) {
 	request := PingValidatorRequest{}
-	if err := ctx.ShouldBind(&request); err != nil {
+	valid, err := validator.BindAndValid(ctx, &request)
+	if !valid {
 		global.Log.Error(err.Error())
 		response.NewResult(ctx).Fail(400, err.Error())
 		return

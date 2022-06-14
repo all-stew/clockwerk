@@ -11,8 +11,12 @@ import (
 
 // 基础路由
 func BaseRouters(r *gin.RouterGroup, auth *jwt.GinJWTMiddleware) gin.IRoutes {
-	r.POST("/login", auth.LoginHandler)          // 用户登录
-	r.POST("/logout", auth.LogoutHandler)        // 用户登出
-	r.POST("/refreshToken", auth.RefreshHandler) // 刷新Token
+	// 用户登录
+	// http POST :8080/api/v1/login username="test" password="123456"
+	r.POST("/login", auth.LoginHandler)
+	// 用户登出  http POST :8080/api/v1/logout Authorization="Bearer xxx"
+	r.POST("/logout", auth.LogoutHandler)
+	// 刷新Token  http POST :8080/api/v1/refreshToken Authorization:"Bearer xxx"
+	r.POST("/refreshToken", auth.RefreshHandler)
 	return r
 }

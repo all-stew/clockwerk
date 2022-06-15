@@ -6,10 +6,11 @@ import (
 	"clockwerk/app/repository/store"
 	"clockwerk/pkg/dbutils"
 	"fmt"
-	"gorm.io/driver/mysql"
-	"gorm.io/gorm"
 	"log"
 	"strings"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 /*
@@ -67,6 +68,8 @@ func TableAutoMigrate() {
 		new(models.SysRole),             // 角色 数据表
 		new(models.SysRoleMenuRelation), // 角色-菜单 数据表
 		new(models.SysMenu),             // 菜单 数据表
+		new(models.SysPreset),           // 策略集 数据表
+		new(models.SysRolePreset),       // 角色-策略集 数据表
 	)
 	if err != nil {
 		panic(fmt.Sprintf("数据库同步异常：%s", err.Error()))

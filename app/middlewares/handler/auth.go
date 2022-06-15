@@ -5,9 +5,10 @@ import (
 	"clockwerk/app/views"
 	"clockwerk/pkg/response"
 	"clockwerk/pkg/validator"
+	"time"
+
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
-	"time"
 )
 
 // Authenticator 用户登陆验证
@@ -28,6 +29,8 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 			"user": map[string]interface{}{
 				"id":       user.Id,
 				"username": user.Username,
+				// TODO: 用户的角色信息
+				"role": []string{"admin"},
 			},
 		}
 		return data, nil

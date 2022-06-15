@@ -1,25 +1,28 @@
 package casbin
 
 import (
-	"clockwerk/app/service"
-	"clockwerk/pkg/matcher"
 	"errors"
 	"fmt"
 	"regexp"
 	"sync"
+
+	"clockwerk/pkg/permission"
+
+	"clockwerk/pkg/matcher"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/casbin/casbin/v2/model"
 )
 
 var (
-	// com.jinmuhealth.platform.service/ReportAPI.*
-	// 分解为 namespace:com.jinmuhealth.platform.service
+	// clockwerk.service/ReportAPI.*
+	// 分解为 namespace:clockwerk.service
 	// API ReportAPI.*
 	reg = regexp.MustCompile(`(\S*)\/(\S*)`)
 )
 
 // 基于casbin实现的Permission管理
+// Casbin维护角色和Policy的组关系和每个policy的关系
 type CasbinPermission struct {
 	// casbin enforcer
 	*casbin.Enforcer
@@ -27,7 +30,7 @@ type CasbinPermission struct {
 	mutex sync.RWMutex
 }
 
-var _ service.Permission = (*CasbinPermission)(nil)
+var _ permission.Permission = (*CasbinPermission)(nil)
 
 // 初始化CasbinPermission
 func NewCasbinPermission(ps []*PermissionPreset, aps []*PolicyGroup) (*CasbinPermission, error) {
@@ -45,7 +48,7 @@ func NewCasbinPermission(ps []*PermissionPreset, aps []*PolicyGroup) (*CasbinPer
         g = _,_
         
         [matchers]
-        m = g(r.sub, p.sub) && keyMatch(r.obj, p.obj) && match_act(r.act, p.act)
+        m = g(r.sub, p.sub) && keyMatch(r.obj, p.obj) && keyMatch(r.act, p.act)
         
         [policy_effect]
         e = some(where (p.eft == allow)) && !some(where (p.eft == deny)) 
@@ -59,9 +62,6 @@ func NewCasbinPermission(ps []*PermissionPreset, aps []*PolicyGroup) (*CasbinPer
 	if err != nil {
 		return nil, err
 	}
-
-	// 添加自定义方法
-	e.AddFunction("match_act", keyMatchFunc)
 
 	c := &CasbinPermission{
 		Enforcer: e,
@@ -78,21 +78,25 @@ func NewCasbinPermission(ps []*PermissionPreset, aps []*PolicyGroup) (*CasbinPer
 
 	// 构建casbin Group
 	for i := 0; i < len(aps); i++ {
-		_, err := e.AddGroupingPolicy(aps[i].AppId, aps[i].PresetId)
+		_, err := e.AddGroupingPolicy(aps[i].RoleId, aps[i].PresetId)
 		if err != nil {
 			return nil, err
 		}
 	}
 
+	fmt.Println(e.GetGroupingPolicy())
+
+	fmt.Println(e.GetPolicy())
+
 	return c, nil
 }
 
 // CheckPermission 检测权限
-func (c *CasbinPermission) CheckPermission(appId, action, resource string) (bool, error) {
+func (c *CasbinPermission) CheckPermission(roleId, resource, action string) (bool, error) {
 	// 加上读锁
 	c.mutex.RLock()
 	defer c.mutex.RUnlock()
-	return c.Enforce(appId, resource, action)
+	return c.Enforce(roleId, resource, action)
 }
 
 // RemovePermission 删除权限
@@ -150,12 +154,12 @@ func (c *CasbinPermission) UpdatePermission(presetId, effect string, actions, re
 
 // Group有关
 // AddPermissionGroup 添加组关系
-func (c *CasbinPermission) AddPermissionGroup(appId, presetId string) error {
+func (c *CasbinPermission) AddPermissionGroup(roleId, presetId string) error {
 	// 加上写锁
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	// 添加组关系
-	_, err := c.AddGroupingPolicy(appId, presetId)
+	_, err := c.AddGroupingPolicy(roleId, presetId)
 	if err != nil {
 		return fmt.Errorf("add group policy failed: %w", err)
 	}
@@ -163,12 +167,12 @@ func (c *CasbinPermission) AddPermissionGroup(appId, presetId string) error {
 }
 
 // DeletePermissionGroup 删除权限组
-func (c *CasbinPermission) DeletePermissionGroup(appId, presetId string) error {
+func (c *CasbinPermission) DeletePermissionGroup(roleId, presetId string) error {
 	// 加上写锁
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
 	// 删除权限组
-	_, err := c.RemoveGroupingPolicy(appId, presetId)
+	_, err := c.RemoveGroupingPolicy(roleId, presetId)
 	if err != nil {
 		return fmt.Errorf("remove group policy failed: %w", err)
 	}
@@ -176,12 +180,12 @@ func (c *CasbinPermission) DeletePermissionGroup(appId, presetId string) error {
 }
 
 // DeleteAppPermissionGroup 删除特定一组权限组
-func (c *CasbinPermission) DeleteAppPermissionGroup(appId string) error {
+func (c *CasbinPermission) DeleteAppPermissionGroup(roleId string) error {
 	// 加上写锁
 	c.mutex.Lock()
 	defer c.mutex.Unlock()
-	// 删除所有appId的组
-	_, err := c.RemoveFilteredGroupingPolicy(0, appId)
+	// 删除所有roleId的组
+	_, err := c.RemoveFilteredGroupingPolicy(0, roleId)
 	if err != nil {
 		return fmt.Errorf("remove app group policy failed: %w", err)
 	}
@@ -213,11 +217,11 @@ func keyMatchFunc(args ...interface{}) (interface{}, error) {
 func matchAct(act1, act2 string) bool {
 	// key1 为request请求的key
 	// key2 为数据库保存的key
-	// sample key1 = com.jinmuhealth.platform.service/ReportAPI.GetReport
-	// key2 = com.jinmuhealth.platform.service/ReportAPI.*
+	// sample key1 = clockwerk.service/ReportAPI.GetReport
+	// key2 = clockwerk.service/ReportAPI.*
 	// 解析key2
-	// com.jinmuhealth.platform.service/ReportAPI.*
-	// 分解为 namespace:com.jinmuhealth.platform.service
+	// clockwerk.service/ReportAPI.*
+	// 分解为 namespace:clockwerk.service
 	// API ReportAPI.*
 	res := reg.FindStringSubmatch(act1)
 	if len(res) != 3 {

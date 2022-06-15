@@ -24,9 +24,9 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 	serviceImpl := impl.UserServiceImpl{}
 	user, err := serviceImpl.Login(c, loginView.Username, loginView.Password)
 	global.Log.Info(user)
-	var roleStrList []string
+	roleStrList := []string{}
 	for _, role := range user.Roles {
-		roleStrList = append([]string{}, role.RoleKey)
+		roleStrList = append(roleStrList, role.RoleKey)
 	}
 
 	// todo 验证码登陆

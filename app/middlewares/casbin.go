@@ -37,7 +37,7 @@ func Casbin(ctx *gin.Context) {
 	user, ok := userData.(map[string]interface{})
 	if !ok {
 		response.NewResult(ctx).Fail(403, "Unauth")
-		return
+		ctx.Abort()
 	}
 	fmt.Println("user", user)
 
@@ -66,10 +66,11 @@ func Casbin(ctx *gin.Context) {
 		if pass {
 			// 继续处理请求
 			ctx.Next()
+			return
 		}
 	}
 
 	// 没有一个角色能够满足该条件直接返回error
 	response.NewResult(ctx).Fail(403, "Unauth")
-	return
+	ctx.Abort()
 }

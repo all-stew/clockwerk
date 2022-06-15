@@ -29,66 +29,7 @@ func Casbin() {
 		panic(fmt.Sprintf("Casbin加载数据失败：%s", err.Error()))
 	}
 
-	// 具体格式参照clockwerk/pkg/permission/casbin/casbin_policy.go
-	// global.DB.FindXXXXXXXX
-	// Sample
-	// presets := []*casbin.PermissionPreset{
-	// 	// Policy为Resources和Actions的笛卡尔积
-	// 	// /system/user/list Post Allow
-	// 	// /system/user/list Get Allow
-	// 	// /system/user/list Put Allow
-	// 	// /system/user/search Post Allow
-	// 	// /system/user/search Get Allow
-	// 	// /system/user/search Put Allow
-	// 	{
-	// 		// 策略集ID
-	// 		PresetId: "1",
-	// 		// 动作
-	// 		Actions: []string{"Post", "Get", "Put"},
-	// 		// 客体
-	// 		// action作用的对象
-	// 		Resources: []string{"/system/user/list", "/system/user/search"},
-	// 		// Allow/Deny
-	// 		Effect: "Allow",
-	// 	},
-	// 	// /system/user/get * Allow
-	// 	// 可以匹配所有/system/user/get的Rest请求
-	// 	{
-	// 		// 策略集ID
-	// 		PresetId: "1",
-	// 		// 动作
-	// 		Actions: []string{"*"},
-	// 		// 客体
-	// 		// action作用的对象
-	// 		Resources: []string{"/system/user/get"},
-	// 		// Allow/Deny
-	// 		Effect: "Allow",
-	// 	},
-	// 	// /system/user/* * Allow
-	// 	// 可以匹配所有/system/user/*的Rest请求
-	// 	{
-	// 		// 策略集ID
-	// 		PresetId: "1",
-	// 		// 动作
-	// 		Actions: []string{"*"},
-	// 		// 客体
-	// 		// action作用的对象
-	// 		Resources: []string{"/system/user/*"},
-	// 		// Allow/Deny
-	// 		Effect: "Allow",
-	// 	},
-	// }
-	// group := []*casbin.PolicyGroup{
-	// 	{
-	// 		RoleId:   "admin",
-	// 		PresetId: "1",
-	// 	},
-	// 	{
-	// 		RoleId:   "test",
-	// 		PresetId: "2",
-	// 	},
-	// }
-
+	// 转化为casbin的结构
 	group, presets, err := convertPresetPolicies(rolePresetsModels, presetsModels)
 	if err != nil {
 		panic(fmt.Sprintf("Casbin数据转化失败：%s", err.Error()))

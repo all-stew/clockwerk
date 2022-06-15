@@ -2,6 +2,7 @@ package handler
 
 import (
 	"clockwerk/app/global"
+	"clockwerk/app/service/impl"
 	"clockwerk/app/views"
 	"clockwerk/pkg/response"
 	"clockwerk/pkg/validator"
@@ -20,7 +21,14 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 	}
 
 	// 用户名密码验证
-	user, err := global.UserStore.FindByUsernameAndPassword(c, loginView.Username, loginView.Password)
+	serviceImpl := impl.UserServiceImpl{}
+	user, err := serviceImpl.Login(c, loginView.Username, loginView.Password)
+	global.Log.Info(user)
+	var roleStrList []string
+	for _, role := range user.Roles {
+		roleStrList = append([]string{}, role.RoleKey)
+	}
+
 	// todo 验证码登陆
 	// todo 登陆日志
 
@@ -29,9 +37,8 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 			"user": map[string]interface{}{
 				"id":       user.Id,
 				"username": user.Username,
-				// TODO: 用户的角色信息
-				"role": []string{"admin"},
 			},
+			"roles": roleStrList,
 		}
 		return data, nil
 	} else {
@@ -45,6 +52,7 @@ func PayloadFunc(data interface{}) jwt.MapClaims {
 		return jwt.MapClaims{
 			jwt.IdentityKey: v["user"],
 			"user":          v["user"],
+			"roles":         v["roles"],
 		}
 	}
 	return jwt.MapClaims{}
@@ -62,12 +70,14 @@ func IdentityHandler(c *gin.Context) interface{} {
 	return map[string]interface{}{
 		"IdentityKey": claims["identity"],
 		"user":        claims["user"],
+		"roles":       claims["roles"],
 	}
 }
 
 func Authorizator(data interface{}, c *gin.Context) bool {
 	if v, ok := data.(map[string]interface{}); ok {
 		c.Set("user", v["user"])
+		c.Set("roles", v["roles"])
 		return true
 	}
 	return false

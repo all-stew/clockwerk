@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"clockwerk/app/global"
+	"clockwerk/pkg/response"
 	"fmt"
 	"path"
 	"strings"
@@ -30,26 +31,28 @@ func Casbin(ctx *gin.Context) {
 	fmt.Println(act)
 
 	fmt.Println("casbin in")
-	// 获取当前用户的信息
-	clamins, ok := ctx.MustGet("JWT_PAYLOAD").(map[string]interface{})
-	fmt.Println("claims", clamins)
-	if !ok {
-		return
-	}
+
 	// 获取当前用户的相关信息
-	user, ok := clamins["user"].(map[string]interface{})
+	userData := ctx.MustGet("user").(interface{})
+	user, ok := userData.(map[string]interface{})
 	if !ok {
+		response.NewResult(ctx).Fail(403, "Unauth")
 		return
 	}
 	fmt.Println("user", user)
 
 	// 获取用户角色额
-	roles, ok := user["role"].([]string)
-	if !ok {
-		return
+	rolesData := ctx.MustGet("roles").([]interface{})
+	roles := make([]string, len(rolesData))
+	for i, v := range rolesData {
+		roles[i] = v.(string)
 	}
+	//if !ok {
+	//	response.NewResult(ctx).Fail(403, "Unauth")
+	//	return
+	//}
 
-	fmt.Println("roles", roles)
+	global.Log.Info("roles", roles)
 
 	// 白名单不需要检测
 	if whiteList[obj] == act {
@@ -58,7 +61,7 @@ func Casbin(ctx *gin.Context) {
 
 	// 权限检查
 	for _, sub := range roles {
-		pass, _ := global.CasbinEnforcer.CheckPermission(sub, act, obj)
+		pass, _ := global.CasbinEnforcer.CheckPermission(sub, obj, act)
 		// 只要有一个角色能够支持访问该接口即可
 		if pass {
 			// 继续处理请求
@@ -67,5 +70,6 @@ func Casbin(ctx *gin.Context) {
 	}
 
 	// 没有一个角色能够满足该条件直接返回error
+	response.NewResult(ctx).Fail(403, "Unauth")
 	return
 }

@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-type SysUser struct {
+type User struct {
 	model.BaseModel
 	Username  string          `json:"username" gorm:"size:64;comment:用户名;column:username"`
 	Nickname  string          `json:"nickname" gorm:"size:128;comment:昵称;column:nickname"`
-	UserType  int             `json:"user_type" gorm:"comment:用户类型;column:user-type"`
+	UserType  int             `json:"user_type" gorm:"comment:用户类型;column:user_type"`
 	Email     string          `json:"email" gorm:"size:128;comment:邮箱;column:email"`
 	Phone     string          `json:"phone" gorm:"size:32;comment:手机号;column:phone"`
 	Gender    SYS_USER_GENDER `json:"gender" gorm:"comment:性别;column:gender"`
@@ -19,7 +19,7 @@ type SysUser struct {
 	LoginIp   string          `json:"login_ip" gorm:"size:128;comment:最后登陆ip"`
 	LoginDate *time.Time      `json:"login_date" gorm:"comment:最后登陆ip"`
 	Remark    string          `json:"remark" gorm:"size:255;comment:备注;column:remark"`
-	SysRole   []SysRole       `json:"roles" gorm:"-"`
+	Roles     []Role          `json:"roles" gorm:"-"`
 }
 
 type SYS_USER_GENDER int
@@ -37,15 +37,15 @@ const (
 	SYS_USER_STATUS_DISABLE SYS_USER_STATUS = 1
 )
 
-func (SysUser) TableName() string {
+func (User) TableName() string {
 	return "sys_user"
 }
 
-func (e *SysUser) Generate() model.Builder {
+func (e *User) Generate() model.Builder {
 	o := *e
 	return &o
 }
 
-func (e *SysUser) GetId() interface{} {
+func (e *User) GetId() interface{} {
 	return e.Id
 }

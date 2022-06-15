@@ -1,4 +1,10 @@
 package service
 
-type SysRoleService interface {
+import (
+	"clockwerk/app/models"
+	"context"
+)
+
+type RoleService interface {
+	FindRoleByUserId(ctx context.Context, userId uint64) ([]models.Role, error)
 }

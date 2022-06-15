@@ -16,9 +16,20 @@ import (
 // main 入口
 func main() {
 	// 初始化操作
-	initialize.Config()      // 配置初始化
-	initialize.Logger()      // 日志初始化
-	initialize.Mysql()       // 数据库初始化
+	initialize.Config() // 配置初始化
+	initialize.Logger() // 日志初始化
+	initialize.Mysql()  // 数据库初始化
+
+	// 根据传递的参数判断是否进行数据初始化
+	if len(os.Args) > 1 {
+		if os.Args[1] == "init" {
+			initialize.Table()
+			initialize.Data()
+			log.Println("输出初始化完成")
+			os.Exit(1)
+		}
+	}
+
 	initialize.Casbin()      // Casbin 初始化
 	initialize.Redis()       // Redis 初始化
 	initialize.Validate()    // Validate.v10 校验器初始化

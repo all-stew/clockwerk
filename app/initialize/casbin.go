@@ -16,15 +16,15 @@ import (
 func Casbin() {
 	// 从数据库读取数据
 	// 加载preset策略集
-	var presetsModels []models.SysPreset
-	err := global.DB.Model(&models.SysPreset{}).Find(&presetsModels).Error
+	var presetsModels []models.Preset
+	err := global.DB.Model(&models.Preset{}).Find(&presetsModels).Error
 	if err != nil {
 		panic(fmt.Sprintf("Casbin加载数据失败：%s", err.Error()))
 	}
 
 	// 加载角色与preset的关系
-	var rolePresetsModels []models.SysRolePreset
-	err = global.DB.Model(&models.SysRolePreset{}).Find(&rolePresetsModels).Error
+	var rolePresetsModels []models.RolePreset
+	err = global.DB.Model(&models.RolePreset{}).Find(&rolePresetsModels).Error
 	if err != nil {
 		panic(fmt.Sprintf("Casbin加载数据失败：%s", err.Error()))
 	}
@@ -52,14 +52,14 @@ func convetIdToString(id uint64) string {
 }
 
 // convertPresetPolicies
-func convertPresetPolicies(ap []models.SysRolePreset, ps []models.SysPreset) ([]*casbin.PolicyGroup, []*casbin.PermissionPreset, error) {
+func convertPresetPolicies(ap []models.RolePreset, ps []models.Preset) ([]*casbin.PolicyGroup, []*casbin.PermissionPreset, error) {
 	gp := make([]*casbin.PolicyGroup, len(ap))
 	for k, v := range ap {
 		gp[k] = &casbin.PolicyGroup{
 			// app_id
-			RoleId: convetIdToString(v.RoleId),
+			RoleId: v.RoleId,
 			// 策略集ID
-			PresetId: convetIdToString(v.PresetId),
+			PresetId: v.PresetId,
 		}
 	}
 

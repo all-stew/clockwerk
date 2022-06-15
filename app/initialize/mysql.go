@@ -2,7 +2,6 @@ package initialize
 
 import (
 	"clockwerk/app/global"
-	"clockwerk/app/models"
 	"clockwerk/app/repository/store"
 	"clockwerk/pkg/dbutils"
 	"fmt"
@@ -13,9 +12,7 @@ import (
 	"gorm.io/gorm"
 )
 
-/*
-   说明：MySQL 数据库连接初始化
-*/
+// Mysql 数据库初始化
 func Mysql() {
 	// 用于打印的连接
 	dsnLog := fmt.Sprintf("%s:******@tcp(%s:%d)/%s?%s&charset=%s&collation=%s",
@@ -52,26 +49,8 @@ func Mysql() {
 	global.DB = db
 	// 获取数据库连接
 	global.UserStore = store.NewUserStore(dbutils.NewConnection(db))
+	global.RoleStore = store.NewRoleStore(dbutils.NewConnection(db))
 
 	log.Println("数据库初始化完成")
 
-	// 数据同步
-	TableAutoMigrate()
-	InitData()
-}
-
-// 数据同步
-func TableAutoMigrate() {
-	err := global.DB.AutoMigrate(
-		new(models.SysUser),             // 用户 数据表
-		new(models.SysUserRoleRelation), // 用户-角色 数据表
-		new(models.SysRole),             // 角色 数据表
-		new(models.SysRoleMenuRelation), // 角色-菜单 数据表
-		new(models.SysMenu),             // 菜单 数据表
-		new(models.SysPreset),           // 策略集 数据表
-		new(models.SysRolePreset),       // 角色-策略集 数据表
-	)
-	if err != nil {
-		panic(fmt.Sprintf("数据库同步异常：%s", err.Error()))
-	}
 }

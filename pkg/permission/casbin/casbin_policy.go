@@ -1,6 +1,6 @@
 package casbin
 
-// PermissionPreset 权限策略集合
+// 权限策略集合
 type PermissionPreset struct {
 	// 策略集ID
 	PresetId string `json:"preset_id"`
@@ -17,10 +17,10 @@ type PermissionPreset struct {
 	Remark string `json:"remark"`
 }
 
-// PolicyGroup 权限组
+// 权限组
 type PolicyGroup struct {
-	// app_id
-	AppId string `json:"app_id"`
+	// role_id
+	RoleId string `json:"role_id"`
 	// 策略集ID
 	PresetId string `json:"preset_id"`
 }

@@ -16,10 +16,10 @@ import (
 // main 入口
 func main() {
 	// 初始化操作
-	initialize.Config() // 配置初始化
-	initialize.Logger() // 日志初始化
-	initialize.Mysql()  // 数据库初始化
-	//initialize.MysqlCasbin() // Casbin 初始化
+	initialize.Config()      // 配置初始化
+	initialize.Logger()      // 日志初始化
+	initialize.Mysql()       // 数据库初始化
+	initialize.Casbin()      // Casbin 初始化
 	initialize.Redis()       // Redis 初始化
 	initialize.Validate()    // Validate.v10 校验器初始化
 	r := initialize.Router() // 路由初始化

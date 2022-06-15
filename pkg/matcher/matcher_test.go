@@ -20,37 +20,37 @@ func TestMatch(t *testing.T) {
 		},
 		{
 			name: "empty-method-1",
-			args: args{pattern: "*/*.*", service: "com.jinmuhealth.platform.srv.s1", method: ""},
+			args: args{pattern: "*/*.*", service: "clockwerk.srv.s1", method: ""},
 			want: false,
 		},
 		{
 			name: "exact-1",
-			args: args{pattern: "com.jinmuhealth.platform.srv.svc-1/EchoAPI.F1", service: "com.jinmuhealth.platform.srv.svc-1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.svc-1/EchoAPI.F1", service: "clockwerk.srv.svc-1", method: "EchoAPI.F1"},
 			want: true,
 		},
 		{
 			name: "all-1",
-			args: args{pattern: "*/*.*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "*/*.*", service: "clockwerk.srv.s1", method: "EchoAPI.F1"},
 			want: true,
 		},
 		{
 			name: "all-2",
-			args: args{pattern: "*/*.*", service: "com.jinmuhealth.platform.srv.s2", method: "EchoAPI.F2"},
+			args: args{pattern: "*/*.*", service: "clockwerk.srv.s2", method: "EchoAPI.F2"},
 			want: true,
 		},
 		{
 			name: "all-3",
-			args: args{pattern: "*/*.*", service: "com.jinmuhealth.platform.srv.s1", method: "ExxAPI.F1"},
+			args: args{pattern: "*/*.*", service: "clockwerk.srv.s1", method: "ExxAPI.F1"},
 			want: true,
 		},
 		{
 			name: "service-wildcard-1",
-			args: args{pattern: "com.jinmuhealth.platform.srv.*/*.*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.*/*.*", service: "clockwerk.srv.s1", method: "EchoAPI.F1"},
 			want: true,
 		},
 		{
 			name: "service-wildcard-2",
-			args: args{pattern: "com.jinmuhealth.platform.srv.*/*.*", service: "com.jinmuhealth.xxx.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.*/*.*", service: "com.jinmuhealth.xxx.srv.s1", method: "EchoAPI.F1"},
 			want: false,
 		},
 		{
@@ -60,42 +60,42 @@ func TestMatch(t *testing.T) {
 		},
 		{
 			name: "api-wildcard-1",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/Ec*API.*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.s1/Ec*API.*", service: "clockwerk.srv.s1", method: "EchoAPI.F1"},
 			want: true,
 		},
 		{
 			name: "api-wildcard-2",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/Ec*API.*", service: "com.jinmuhealth.platform.srv.s1", method: "EcxxxxxxxAPI.F1"},
+			args: args{pattern: "clockwerk.srv.s1/Ec*API.*", service: "clockwerk.srv.s1", method: "EcxxxxxxxAPI.F1"},
 			want: true,
 		},
 		{
 			name: "call-wildcard-1",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/EchoAPI.*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.s1/EchoAPI.*", service: "clockwerk.srv.s1", method: "EchoAPI.F1"},
 			want: true,
 		},
 		{
 			name: "call-wildcard-2",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/EchoAPI.M*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.F1"},
+			args: args{pattern: "clockwerk.srv.s1/EchoAPI.M*", service: "clockwerk.srv.s1", method: "EchoAPI.F1"},
 			want: false,
 		},
 		{
 			name: "call-wildcard-3",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/EchoAPI.M*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.M1"},
+			args: args{pattern: "clockwerk.srv.s1/EchoAPI.M*", service: "clockwerk.srv.s1", method: "EchoAPI.M1"},
 			want: true,
 		},
 		{
 			name: "call-wildcard-4",
-			args: args{pattern: "com.jinmuhealth.platform.srv.s1/EchoAPI.M*", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.M2"},
+			args: args{pattern: "clockwerk.srv.s1/EchoAPI.M*", service: "clockwerk.srv.s1", method: "EchoAPI.M2"},
 			want: true,
 		},
 		{
 			name: "multiple-patterns-1",
-			args: args{pattern: "{com.jinmuhealth.platform.srv.s1/EchoAPI.M*,com.jinmuhealth.platform.srv.s2/*.*}", service: "com.jinmuhealth.platform.srv.s1", method: "EchoAPI.M2"},
+			args: args{pattern: "{clockwerk.srv.s1/EchoAPI.M*,clockwerk.srv.s2/*.*}", service: "clockwerk.srv.s1", method: "EchoAPI.M2"},
 			want: true,
 		},
 		{
 			name: "multiple-patterns-2",
-			args: args{pattern: "{com.jinmuhealth.platform.srv.s1/EchoAPI.M*,com.jinmuhealth.platform.srv.s2/*.*}", service: "com.jinmuhealth.platform.srv.s2", method: "XxAPI.N2"},
+			args: args{pattern: "{clockwerk.srv.s1/EchoAPI.M*,clockwerk.srv.s2/*.*}", service: "clockwerk.srv.s2", method: "XxAPI.N2"},
 			want: true,
 		},
 	}

@@ -40,7 +40,7 @@ mysql:
   # 数据库用户
   username: root
   # 数据库密码
-  password: zjj12345
+  password: 123321
   # 数据库编码
   charset: utf8mb4
   # 数据库字符集

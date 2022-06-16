@@ -1,8 +1,17 @@
 package impl
 
-import . "clockwerk/app/service"
+import (
+	"clockwerk/app/global"
+	"clockwerk/app/models"
+	. "clockwerk/app/service"
+	"context"
+)
 
-type SysRoleServiceImpl interface {
+type RoleServiceImpl struct {
 }
 
-var _ SysRoleService = (*SysRoleServiceImpl)(nil)
+var _ RoleService = (*RoleServiceImpl)(nil)
+
+func (rs RoleServiceImpl) FindRoleByUserId(ctx context.Context, userId uint64) ([]models.Role, error) {
+	return global.RoleStore.FindRoleByUserId(ctx, userId)
+}

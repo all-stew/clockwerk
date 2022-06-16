@@ -29,6 +29,7 @@ var (
 	CasbinEnforcer *casbin.CasbinPermission // cabin实例
 	Redis          *redis.Client            // Redis
 	UserStore      *store.UserStore         // userStore
+	RoleStore      *store.RoleStore         // roleStore
 )
 
 // 时间格式化常量

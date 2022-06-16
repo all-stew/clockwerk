@@ -4,21 +4,21 @@ import (
 	"clockwerk/pkg/model"
 )
 
-type SysRolePreset struct {
+type RolePreset struct {
 	model.BaseModel
-	RoleId   uint64 `json:"role_id" gorm:"comment:角色Id;column:role_id"`
-	PresetId uint64 `json:"preset_id" gorm:"comment:策略Id;column:preset_id"`
+	RoleId   string `json:"role_id" gorm:"comment:角色Id;column:role_id"`
+	PresetId string `json:"preset_id" gorm:"comment:策略Id;column:preset_id"`
 }
 
-func (SysRolePreset) TableName() string {
+func (RolePreset) TableName() string {
 	return "sys_role_preset"
 }
 
-func (e *SysRolePreset) Generate() model.Builder {
+func (e *RolePreset) Generate() model.Builder {
 	o := *e
 	return &o
 }
 
-func (e *SysRolePreset) GetId() interface{} {
+func (e *RolePreset) GetId() interface{} {
 	return e.Id
 }

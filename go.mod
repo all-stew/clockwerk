@@ -12,11 +12,11 @@ require (
 	gorm.io/gorm v1.23.5
 )
 
+require github.com/jinzhu/now v1.1.5 // indirect
+
 require (
 	github.com/appleboy/gin-jwt/v2 v2.8.0
 	github.com/casbin/casbin/v2 v2.47.2
-	github.com/casbin/gorm-adapter/v3 v3.7.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-playground/locales v0.14.0
 	github.com/go-playground/universal-translator v0.18.0

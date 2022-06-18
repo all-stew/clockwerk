@@ -39,7 +39,7 @@ func (us *UserStore) FindById(ctx context.Context, id uint64) (models.User, erro
 func (us *UserStore) Create(ctx context.Context, username string, nickname string, phone string, email string, gender models.SYS_USER_GENDER) (models.User, error) {
 	user := models.User{
 		Username: username,
-		Password: "",
+		Password: utils.CryptoPassword("123456"),
 		Nickname: nickname,
 		Phone:    phone,
 		Avatar:   "",

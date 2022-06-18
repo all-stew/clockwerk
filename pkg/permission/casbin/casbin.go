@@ -84,10 +84,6 @@ func NewCasbinPermission(ps []*PermissionPreset, aps []*PolicyGroup) (*CasbinPer
 		}
 	}
 
-	fmt.Println(e.GetGroupingPolicy())
-
-	fmt.Println(e.GetPolicy())
-
 	return c, nil
 }
 

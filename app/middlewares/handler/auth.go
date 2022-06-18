@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"clockwerk/app/global"
 	"clockwerk/app/service/impl"
 	"clockwerk/app/views"
 	"clockwerk/pkg/response"
 	"clockwerk/pkg/validator"
+	"errors"
 	"time"
 
 	jwt "github.com/appleboy/gin-jwt/v2"
@@ -15,16 +15,19 @@ import (
 // Authenticator 用户登陆验证
 func Authenticator(c *gin.Context) (interface{}, error) {
 	var loginView views.LoginView
-	valid, _ := validator.BindAndValid(c, &loginView)
-	if !valid {
-		return nil, jwt.ErrMissingLoginValues
+	err := validator.BindAndValid(c, &loginView)
+	if err != nil {
+		return nil, errors.New(validator.GetErrorMessage(loginView, err))
 	}
 
 	// 用户名密码验证
 	serviceImpl := impl.UserServiceImpl{}
 	user, err := serviceImpl.Login(c, loginView.Username, loginView.Password)
-	global.Log.Info(user)
-	roleStrList := []string{}
+	if err != nil {
+		return nil, errors.New("用户名或密码错误")
+	}
+
+	roleStrList := make([]string, 0)
 	for _, role := range user.Roles {
 		roleStrList = append(roleStrList, role.RoleKey)
 	}

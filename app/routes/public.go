@@ -14,5 +14,7 @@ func TestRouters(r *gin.RouterGroup) gin.IRoutes {
 	r.GET("/ping/id", api.PingValidatorHandler)
 	// http POST :8080/api/v1/ping/id id:=20
 	r.POST("/ping/id", api.PingValidatorFormHandler)
+	// http POST :8080/api/v1/ping/user mobile="123" username="123"
+	r.POST("/ping/user", api.PingValidatorForm2Handler)
 	return r
 }

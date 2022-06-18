@@ -5,7 +5,6 @@ import (
 	"clockwerk/app/repository/store"
 	"clockwerk/pkg/dbutils"
 	"fmt"
-	"log"
 	"strings"
 
 	"gorm.io/driver/mysql"
@@ -51,6 +50,6 @@ func Mysql() {
 	global.UserStore = store.NewUserStore(dbutils.NewConnection(db))
 	global.RoleStore = store.NewRoleStore(dbutils.NewConnection(db))
 
-	log.Println("数据库初始化完成")
+	global.Log.Info("数据库初始化完成")
 
 }

@@ -7,6 +7,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func ListUserByPage(ctx *gin.Context) {
+
+}
+
 func Create(ctx *gin.Context) {
 	var view views.UserCreateRequestView
 	err := ctx.ShouldBind(&view)

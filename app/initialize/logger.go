@@ -3,7 +3,6 @@ package initialize
 import (
 	"clockwerk/app/global"
 	"fmt"
-	"log"
 	"os"
 	"time"
 
@@ -21,7 +20,7 @@ func ZapLocalTimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 	enc.AppendString(t.Format(global.MsecLocalTimeFormat))
 }
 
-// 初始化日志打印
+// Logger 初始化日志打印
 func Logger() {
 	// 定义基础变量
 	// 当前时间
@@ -62,5 +61,5 @@ func Logger() {
 	global.Log = logger.Sugar()
 
 	// 打印输出日志
-	log.Println("日志初始化完成")
+	global.Log.Info("日志初始化完成")
 }

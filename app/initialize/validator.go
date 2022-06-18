@@ -7,13 +7,10 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	zhTranslations "github.com/go-playground/validator/v10/translations/zh"
-	"log"
 	"regexp"
 )
 
-/*
-   说明：上传数据校验器初始化
-*/
+// Validate 数据校验器初始化
 func Validate() {
 	// 语言处理，中文
 	translator := zh.New()
@@ -40,7 +37,7 @@ func Validate() {
 		}
 
 		if msg != "" {
-			log.Println(msg)
+			global.Log.Errorf(msg)
 			panic(msg)
 		}
 	}
@@ -48,7 +45,7 @@ func Validate() {
 	_ = zhTranslations.RegisterDefaultTranslations(validate, trans)
 	global.Validate = validate
 	global.Translator = trans
-	log.Println("Validator.v10校验器初始化完成")
+	global.Log.Info("Validator.v10校验器初始化完成")
 }
 
 /*

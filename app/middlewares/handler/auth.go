@@ -21,8 +21,8 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 	}
 
 	// 用户名密码验证
-	serviceImpl := impl.UserServiceImpl{}
-	user, err := serviceImpl.Login(c, loginView.Username, loginView.Password)
+	serviceImpl := impl.GetUserServiceImpl()
+	user, err := serviceImpl.Login(loginView.Username, loginView.Password)
 	if err != nil {
 		return nil, errors.New("用户名或密码错误")
 	}

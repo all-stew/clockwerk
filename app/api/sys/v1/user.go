@@ -1,7 +1,7 @@
 package v1
 
 import (
-	"clockwerk/app/global"
+	"clockwerk/app/service/impl"
 	"clockwerk/app/views"
 	"clockwerk/pkg/response"
 	"github.com/gin-gonic/gin"
@@ -20,9 +20,8 @@ func Create(ctx *gin.Context) {
 		return
 	}
 
-	// todo check
-
-	user, err := global.UserStore.Create(ctx, view.Username, view.Username, view.Phone, view.Email, view.Gender)
+	serviceImpl := impl.GetUserServiceImpl()
+	user, err := serviceImpl.Create(view.Nickname, view.Phone, view.Email, view.Gender)
 	if err != nil {
 		response.NewResult(ctx).Fail(400, "创建失败")
 		return

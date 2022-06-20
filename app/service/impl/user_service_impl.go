@@ -11,8 +11,8 @@ import (
 type UserServiceImpl struct {
 }
 
-func GetUserServiceImpl() UserServiceImpl {
-	return UserServiceImpl{}
+func GetUserServiceImpl() *UserServiceImpl {
+	return &UserServiceImpl{}
 }
 
 var _ UserService = (*UserServiceImpl)(nil)

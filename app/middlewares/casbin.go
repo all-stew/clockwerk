@@ -3,6 +3,7 @@ package middleware
 import (
 	"clockwerk/app/global"
 	"clockwerk/pkg/response"
+	"fmt"
 	"path"
 	"strings"
 
@@ -58,6 +59,7 @@ func Casbin(ctx *gin.Context) {
 	}
 
 	// 没有一个角色能够满足该条件直接返回error
-	response.NewResult(ctx).Fail(403, "Unauth")
 	ctx.Abort()
+	fmt.Println("casbin out")
+	response.NewResult(ctx).Fail(403, "Unauth")
 }

@@ -53,7 +53,7 @@ func convertPresetPolicies(ap []models.RolePreset, ps []models.Preset) ([]*casbi
 	gp := make([]*casbin.PolicyGroup, len(ap))
 	for k, v := range ap {
 		gp[k] = &casbin.PolicyGroup{
-			// app_id
+			// role_id
 			RoleId: v.RoleId,
 			// 策略集ID
 			PresetId: v.PresetId,

@@ -6,7 +6,6 @@ import (
 	"clockwerk/app/routes"
 	"clockwerk/pkg/response"
 	"fmt"
-	"log"
 	"runtime/debug"
 
 	"github.com/gin-gonic/gin"
@@ -47,11 +46,9 @@ func Router() *gin.Engine {
 		systemGroup := vGroup.Group("system")
 		{
 			routes.UserRouters(systemGroup, auth) // 用户相关接口
-			routes.RoleRouters(systemGroup, auth) // 角色相关接口
-			routes.MenuRouters(systemGroup, auth) // 菜单相关接口
 		}
 	}
-	log.Println("路由初始化完成")
+	global.Log.Info("路由初始化完成")
 	return r
 }
 

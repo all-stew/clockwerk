@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"github.com/go-redis/redis/v8"
-	"log"
 	"time"
 )
 
@@ -51,7 +50,7 @@ func Redis() {
 	if err != nil {
 		panic("Redis初始化连接失败")
 	} else {
-		log.Println("Redis初始化完成")
+		global.Log.Info("Redis初始化完成")
 		global.Redis = client
 	}
 }

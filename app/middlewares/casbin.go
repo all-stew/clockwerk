@@ -27,19 +27,13 @@ func Casbin(ctx *gin.Context) {
 	// 请求方式作为请求的 act
 	act := ctx.Request.Method
 
-	fmt.Println(obj)
-	fmt.Println(act)
-
-	fmt.Println("casbin in")
-
 	// 获取当前用户的相关信息
 	userData := ctx.MustGet("user").(interface{})
-	user, ok := userData.(map[string]interface{})
+	_, ok := userData.(map[string]interface{})
 	if !ok {
 		response.NewResult(ctx).Fail(403, "Unauth")
 		ctx.Abort()
 	}
-	fmt.Println("user", user)
 
 	// 获取用户角色额
 	rolesData := ctx.MustGet("roles").([]interface{})
@@ -47,12 +41,6 @@ func Casbin(ctx *gin.Context) {
 	for i, v := range rolesData {
 		roles[i] = v.(string)
 	}
-	//if !ok {
-	//	response.NewResult(ctx).Fail(403, "Unauth")
-	//	return
-	//}
-
-	global.Log.Info("roles", roles)
 
 	// 白名单不需要检测
 	if whiteList[obj] == act {

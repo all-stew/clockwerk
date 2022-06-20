@@ -60,7 +60,6 @@ func AuthInit() (*jwt.GinJWTMiddleware, error) {
 	}
 
 	return jwt.New(&jwt.GinJWTMiddleware{
-
 		Realm:           global.Conf.Jwt.Realm,       // JWT 标识
 		Key:             []byte(global.Conf.Jwt.Key), // 服务端密钥
 		Timeout:         timeout,                     // 有效时间

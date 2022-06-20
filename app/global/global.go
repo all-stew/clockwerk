@@ -4,9 +4,6 @@ import (
 	"clockwerk/app/common"
 	"clockwerk/app/repository/store"
 	"clockwerk/pkg/permission/casbin"
-	"errors"
-	"strings"
-
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	"github.com/go-redis/redis/v8"
@@ -38,35 +35,3 @@ const (
 	SecLocalTimeFormat  = "2006-01-02 15:04:05"
 	DateLocalTimeFormat = "2006-01-02"
 )
-
-// NewValidatorError 方法说明：对参数校验的错误进行重写参数：1. 原本的错误信息2. 字段翻译 map3. 错误翻译 map
-func NewValidatorError(err error, fieldTrans map[string]string, fieldError map[string]string) error {
-	if err == nil {
-		return nil
-	}
-
-	// 获取校验错误
-	errs := err.(validator.ValidationErrors)
-	for _, e := range errs {
-		tranStr := e.Translate(Translator)
-
-		// 字段名称
-		field := e.Field()
-
-		// 自定义错误：先判断错误是否被重写
-		v, ok := fieldError[field]
-		if ok {
-			// 返回自定义错误
-			return errors.New(v)
-		}
-
-		// 系统错误：为重写错误信息的字段
-		v, ok = fieldTrans[field]
-		if ok {
-			// 替换掉英文字段为中文
-			return errors.New(strings.Replace(tranStr, e.Field(), v, -1))
-		}
-		return errors.New(tranStr)
-	}
-	return nil
-}

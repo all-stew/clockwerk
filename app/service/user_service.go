@@ -2,9 +2,9 @@ package service
 
 import (
 	"clockwerk/app/models"
-	"context"
 )
 
 type UserService interface {
-	Login(ctx context.Context, username string, password string) (models.User, error)
+	Login(username string, password string) (models.User, error)
+	Create(nickname string, phone string, email string, gender models.SYS_USER_GENDER) (models.User, error)
 }

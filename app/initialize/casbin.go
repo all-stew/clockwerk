@@ -6,7 +6,6 @@ import (
 	"clockwerk/pkg/permission/casbin"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strconv"
 )
 
@@ -42,9 +41,7 @@ func Casbin() {
 
 	global.CasbinEnforcer = e
 
-	// 全局设置
-	//global.CasbinEnforcer = e
-	log.Println("Casbin初始化完成")
+	global.Log.Info("Casbin初始化完成")
 }
 
 func convetIdToString(id uint64) string {

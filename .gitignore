@@ -17,3 +17,5 @@
 logs/*.log
 .idea
 dist
+
+app/config/application.*.yaml

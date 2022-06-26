@@ -7,8 +7,8 @@ import (
 	"github.com/mojocn/base64Captcha"
 )
 
-// base64Captcha  缓存对象
-var store = base64Captcha.DefaultMemStore
+// Store base64Captcha  缓存对象
+var Store = base64Captcha.DefaultMemStore
 
 type captchaAPIHandler struct {
 }
@@ -20,7 +20,7 @@ func NewCaptchaAPIHandler() *captchaAPIHandler {
 // GetCaptcha 获取验证码
 func (u *captchaAPIHandler) GetCaptcha(ctx *gin.Context) {
 	driver := base64Captcha.NewDriverDigit(80, 240, 4, 0.7, 80)
-	cp := base64Captcha.NewCaptcha(driver, store)
+	cp := base64Captcha.NewCaptcha(driver, Store)
 	// b64s是图片的base64编码
 	id, b64s, err := cp.Generate()
 	if err != nil {

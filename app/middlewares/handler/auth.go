@@ -1,6 +1,7 @@
 package handler
 
 import (
+	v1 "clockwerk/app/api/sys/v1"
 	"clockwerk/app/service/impl"
 	"clockwerk/app/views"
 	"clockwerk/pkg/response"
@@ -18,6 +19,10 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 	err := validator.BindAndValid(c, &loginView)
 	if err != nil {
 		return nil, errors.New(validator.GetErrorMessage(loginView, err))
+	}
+
+	if verify := v1.Store.Verify(loginView.CaptchaId, loginView.Captcha, true); !verify {
+		return nil, errors.New("验证码错误")
 	}
 
 	// 用户名密码验证
